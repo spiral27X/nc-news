@@ -2,16 +2,22 @@
 const URL_BASE = "http://localhost:9090";
 import { useEffect, useState } from "react";
 import ArticleCard from "./ArticleCard";
+import FilterBar from "./FilterBar";
 
 function ArticleList() {
   const [data, setData] = useState([]);
   const [reset, setReset] = useState(false);
-
+  const [query, setQuery] = useState({
+    sort_by: "created_at",
+    order: "desc",
+  });
   useEffect(() => {
     async function getData() {
       console.log(URL_BASE);
 
-      const response = await fetch(`${URL_BASE}/api/articles`);
+      const response = await fetch(
+        `${URL_BASE}/api/articles?sort_by=${query.sort_by}&order=${query.order}`,
+      );
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -26,7 +32,7 @@ function ArticleList() {
     //console.log("getData ran");
     setReset(false);
     getData();
-  }, [reset]);
+  }, [reset, query]);
 
   return (
     <>
@@ -39,6 +45,7 @@ function ArticleList() {
       >
         Refresh Articles
       </button>
+      <FilterBar query={query} setQuery={setQuery} />
       <ul>
         {data.map((article) => (
           <ArticleCard

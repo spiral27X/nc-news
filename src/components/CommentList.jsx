@@ -17,7 +17,7 @@ function CommentList({ article_id }) {
 
       const jsonData = await response.json();
       console.log("The commment response: ", jsonData);
-      //setData(jsonData.article);
+      setData(jsonData.comments);
     }
 
     getData();
@@ -26,8 +26,10 @@ function CommentList({ article_id }) {
   return (
     <>
       <div>Where are comment list goes</div>
-      <p>{data}</p>
-      {/*<p>{JSON.stringify(data)}</p>*/}
+
+      <p>{console.log(JSON.stringify(data))}</p>
+
+      <p>{JSON.stringify(data)}</p>
     </>
   );
 }
