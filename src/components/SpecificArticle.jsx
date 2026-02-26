@@ -75,11 +75,12 @@ function SpecificArticle() {
 
         <footer style={{ marginTop: "6px" }}>
           <span>
-            <strong>Comments:</strong> {comment_count}
-          </span>{" "}
-          |{" "}
-          <span>
-            <strong>Votes:</strong> {votes}
+            <span>
+              <strong>Votes:</strong> {votes}
+            </span>
+            <p>
+              This Article has <strong>{comment_count}</strong> Comments:
+            </p>
           </span>
         </footer>
         {/*<div>{Math.random()}</div>*/}

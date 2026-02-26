@@ -2,6 +2,7 @@
 const URL_BASE = "http://localhost:9090";
 
 import { useState, useEffect } from "react";
+import CommentCard from "./CommentCard";
 
 function CommentList({ article_id }) {
   const [data, setData] = useState([]);
@@ -25,11 +26,17 @@ function CommentList({ article_id }) {
 
   return (
     <>
-      <div>Where are comment list goes</div>
+      <h1>List of Comments</h1>
 
-      <p>{console.log(JSON.stringify(data))}</p>
-
-      <p>{JSON.stringify(data)}</p>
+      <ul>
+        {data.map((comment) => (
+          <CommentCard
+            commentData={comment}
+            key={"commentcard" + comment.comment_id}
+          ></CommentCard>
+        ))}
+        <p>{console.log(`From CommentList data: ${data}`)}</p>
+      </ul>
     </>
   );
 }
