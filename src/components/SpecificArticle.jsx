@@ -1,16 +1,17 @@
 //const URL_BASE = "https://nc-news-oi1k.onrender.com";
 const URL_BASE = "http://localhost:9090";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router";
 import CommentList from "./CommentList";
+import AddComment from "./AddComments";
 import formatDate from "../utils/dateISOtoHumanReadable";
+import { UserContext } from "./UserContext";
 
 function SpecificArticle() {
+  const { user } = useContext(UserContext);
   const { article_id } = useParams();
-
   const [data, setData] = useState([]);
-  const [reset, setReset] = useState(false);
 
   useEffect(() => {
     async function getData() {
@@ -23,16 +24,16 @@ function SpecificArticle() {
       }
 
       const jsonData = await response.json();
-      console.log(jsonData.article);
+
       setData(jsonData.article);
       //console.log(data); //does not output, not ready yet.  Could use helper function, useEffect on data change and not proceed until it is ready
       //console.log(jsonData);
     }
 
     //console.log("getData ran");
-    setReset(false);
+
     getData();
-  }, [reset]);
+  }, []);
 
   const {
     author,
@@ -40,12 +41,42 @@ function SpecificArticle() {
     topic,
     created_at,
     body,
-    votes,
     article_img_url,
     comment_count,
   } = data;
 
-  //console.log(data);
+  async function handleVote(e) {
+    const voteChange = e.target.id === "increase-vote" ? 1 : -1;
+    setData((prev) => ({
+      ...prev,
+      votes: prev.votes + voteChange,
+    }));
+    //console.log("CommentCard handlevote, votchange:", voteChange);
+
+    async function updateCommentVotes() {
+      try {
+        const response = await fetch(`${URL_BASE}/api/articles/${article_id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ inc_votes: voteChange }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to update comment");
+        }
+
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        setData((prev) => ({
+          ...prev,
+          votes: prev.votes - voteChange,
+        }));
+        console.error(error);
+      }
+    }
+    updateCommentVotes();
+  }
 
   return (
     <>
@@ -76,7 +107,7 @@ function SpecificArticle() {
         <footer style={{ marginTop: "6px" }}>
           <span>
             <span>
-              <strong>Votes:</strong> {votes}
+              <strong>Votes:</strong> {data.votes}
             </span>
             <p>
               This Article has <strong>{comment_count}</strong> Comments:
@@ -85,6 +116,16 @@ function SpecificArticle() {
         </footer>
         {/*<div>{Math.random()}</div>*/}
       </article>
+      {!(user === author) && (
+        <>
+          <button id="increase-vote" onClick={handleVote}>
+            Increase Vote
+          </button>
+          <button id="decrease-vote" onClick={handleVote}>
+            Decrease Vote
+          </button>
+        </>
+      )}
 
       <CommentList article_id={article_id} />
     </>

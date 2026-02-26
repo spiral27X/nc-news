@@ -18,7 +18,7 @@ function UserCard() {
       const jsonData = await response.json();
 
       setUsers(jsonData.users);
-      console.log("UserCard, handleSwitch - users ", jsonData.users);
+      //console.log("UserCard, handleSwitch - users ", jsonData.users);
     }
 
     getData();
@@ -29,7 +29,7 @@ function UserCard() {
   }
 
   async function handleChange(e) {
-    console.log(e.target.value);
+    //console.log(e.target.value);
     setUser(e.target.value);
     setShowUser(false);
   }

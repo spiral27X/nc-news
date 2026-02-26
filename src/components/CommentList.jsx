@@ -3,7 +3,7 @@ const URL_BASE = "http://localhost:9090";
 
 import { useState, useEffect } from "react";
 import CommentCard from "./CommentCard";
-
+import AddComment from "./AddComments";
 function CommentList({ article_id }) {
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -17,8 +17,8 @@ function CommentList({ article_id }) {
       }
 
       const jsonData = await response.json();
-      console.log("The commment response: ", jsonData);
       setData(jsonData.comments);
+      //console.log(jsonData.comments);
     }
 
     getData();
@@ -26,6 +26,7 @@ function CommentList({ article_id }) {
 
   return (
     <>
+      <AddComment article_id={article_id} setCommentData={setData} />
       <h1>List of Comments</h1>
 
       <ul>
@@ -35,7 +36,6 @@ function CommentList({ article_id }) {
             key={"commentcard" + comment.comment_id}
           ></CommentCard>
         ))}
-        <p>{console.log(`From CommentList data: ${data}`)}</p>
       </ul>
     </>
   );
