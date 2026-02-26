@@ -18,7 +18,7 @@ function CommentList({ article_id }) {
 
       const jsonData = await response.json();
       setData(jsonData.comments);
-      //console.log(jsonData.comments);
+      console.log(jsonData.comments);
     }
 
     getData();

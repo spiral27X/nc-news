@@ -1,9 +1,24 @@
-import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
-function FilterBar({ query, setQuery }) {
+function FilterBar() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // read both params with defaults
+  const query = {
+    sort_by: searchParams.get("sort_by") || "created_at",
+    order: searchParams.get("order") || "desc",
+  };
+
+  // helper to update one param without wiping others
+  const updateParam = (key, value) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set(key, value);
+    setSearchParams(newParams);
+  };
+
   return (
     <section>
-      <div>Where Filterbar goes</div>
+      <div>Where FilterBar goes</div>
       <div>
         sort_by: {query.sort_by} | order: {query.order}
       </div>
@@ -14,12 +29,7 @@ function FilterBar({ query, setQuery }) {
         <select
           id="sort_by"
           value={query.sort_by}
-          onChange={(e) =>
-            setQuery((prev) => ({
-              ...prev,
-              sort_by: e.target.value,
-            }))
-          }
+          onChange={(e) => updateParam("sort_by", e.target.value)}
         >
           <option value="created_at">Date</option>
           <option value="votes">Votes</option>
@@ -33,12 +43,7 @@ function FilterBar({ query, setQuery }) {
         <select
           id="order"
           value={query.order}
-          onChange={(e) =>
-            setQuery((prev) => ({
-              ...prev,
-              order: e.target.value,
-            }))
-          }
+          onChange={(e) => updateParam("order", e.target.value)}
         >
           <option value="desc">Descending</option>
           <option value="asc">Ascending</option>

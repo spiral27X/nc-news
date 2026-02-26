@@ -1,57 +1,50 @@
-//const URL_BASE = "https://nc-news-oi1k.onrender.com";
-const URL_BASE = "http://localhost:9090";
 import { useEffect, useState } from "react";
 import ArticleCard from "./ArticleCard";
 import FilterBar from "./FilterBar";
+import { useSearchParams } from "react-router";
+
+const URL_BASE = "http://localhost:9090";
 
 function ArticleList() {
   const [data, setData] = useState([]);
-  const [reset, setReset] = useState(false);
-  const [query, setQuery] = useState({
-    sort_by: "created_at",
-    order: "desc",
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const query = {
+    sort_by: searchParams.get("sort_by") || "created_at",
+    order: searchParams.get("order") || "desc",
+  };
+
   useEffect(() => {
     async function getData() {
-      console.log(URL_BASE);
+      try {
+        const queryString = new URLSearchParams(query).toString();
+        const response = await fetch(`${URL_BASE}/api/articles?${queryString}`);
 
-      const response = await fetch(
-        `${URL_BASE}/api/articles?sort_by=${query.sort_by}&order=${query.order}`,
-      );
+        if (!response.ok) throw new Error("Network response was not ok");
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+        const jsonData = await response.json();
+        setData(jsonData.articles);
+      } catch (err) {
+        console.error(err);
       }
-
-      const jsonData = await response.json();
-      setData(jsonData.articles);
-      //console.log(data); //does not output, not ready yet.  Could use helper function, useEffect on data change and not proceed until it is ready
-      //console.log(jsonData);
     }
 
-    //console.log("getData ran");
-    setReset(false);
     getData();
-  }, [reset, query]);
+
+    // cleanup: abort fetch if query changes or component unmounts
+    //return () => controller.abort();
+  }, [query]);
 
   return (
     <>
       <h1>List of Articles</h1>
-
-      <button
-        onClick={() => {
-          setReset(true);
-        }}
-      >
-        Refresh Articles
-      </button>
-      <FilterBar query={query} setQuery={setQuery} />
+      <FilterBar />
       <ul>
         {data.map((article) => (
           <ArticleCard
             articleData={article}
             key={"articlecard" + article.article_id}
-          ></ArticleCard>
+          />
         ))}
       </ul>
     </>
