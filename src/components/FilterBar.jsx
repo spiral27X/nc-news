@@ -3,13 +3,11 @@ import { useSearchParams } from "react-router-dom";
 function FilterBar() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // read both params with defaults
   const query = {
     sort_by: searchParams.get("sort_by") || "created_at",
     order: searchParams.get("order") || "desc",
   };
 
-  // helper to update one param without wiping others
   const updateParam = (key, value) => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set(key, value);

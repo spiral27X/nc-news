@@ -36,6 +36,8 @@ function AddComment({ article_id, setCommentData }) {
 
       const data = await response.json();
       console.log(data);
+
+      
     } catch (error) {
       setCommentData((prev) => prev.slice(1));
 

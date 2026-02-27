@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import ArticleList from "./components/ArticleList";
 import SpecificArticle from "./components/SpecificArticle";
 import Topics from "./components/Topics";
+import SpecificTopic from "./components/SpecificTopic";
 function App() {
   return (
     <>
@@ -16,6 +17,7 @@ function App() {
         <Route path="/articlelist" element={<Navigate to="/" replace />} />
         <Route path="/article/:article_id" element={<SpecificArticle />} />
         <Route path="/topics" element={<Topics />} />
+        <Route path="/topics/:topic_name" element={<ArticleList />}></Route>
       </Routes>
     </>
   );

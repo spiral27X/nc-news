@@ -2,22 +2,26 @@ import { useEffect, useState } from "react";
 import ArticleCard from "./ArticleCard";
 import FilterBar from "./FilterBar";
 import { useSearchParams } from "react-router";
+import { useParams } from "react-router";
 
 const URL_BASE = "http://localhost:9090";
 
 function ArticleList() {
   const [data, setData] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const { topic_name } = useParams();
 
   const query = {
     sort_by: searchParams.get("sort_by") || "created_at",
     order: searchParams.get("order") || "desc",
+    topic: topic_name,
   };
 
   useEffect(() => {
     async function getData() {
       try {
         const queryString = new URLSearchParams(query).toString();
+        console.log("ArticleList, getData. querstring ", queryString);
         const response = await fetch(`${URL_BASE}/api/articles?${queryString}`);
 
         if (!response.ok) throw new Error("Network response was not ok");
@@ -30,10 +34,7 @@ function ArticleList() {
     }
 
     getData();
-
-    // cleanup: abort fetch if query changes or component unmounts
-    //return () => controller.abort();
-  }, [query]);
+  }, [searchParams, searchParams, topic_name]);
 
   return (
     <>
